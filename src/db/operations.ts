@@ -295,6 +295,24 @@ export async function addXp(userId: string, xp: number): Promise<void> {
   );
 }
 
+export async function getChapterStats(userId: string): Promise<Record<number, { total: number; learned: number }>> {
+  const db = await getDb();
+  const result: Record<number, { total: number; learned: number }> = {};
+  for (const ch of [1, 2, 3, 4, 5, 6, 7]) {
+    const total = await db.getFirstAsync<{ count: number }>(
+      "SELECT COUNT(*) as count FROM questions WHERE chapter = ?", [ch]
+    );
+    const learned = await db.getFirstAsync<{ count: number }>(
+      `SELECT COUNT(*) as count FROM card_progress cp
+       JOIN questions q ON q.id = cp.question_id
+       WHERE cp.user_id = ? AND q.chapter = ? AND cp.repetitions >= 2`,
+      [userId, ch]
+    );
+    result[ch] = { total: total?.count ?? 0, learned: learned?.count ?? 0 };
+  }
+  return result;
+}
+
 export async function setLicenseClass(userId: string, licenseClass: LicenseClass): Promise<void> {
   const db = await getDb();
   await db.runAsync(

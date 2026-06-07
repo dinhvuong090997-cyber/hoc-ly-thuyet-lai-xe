@@ -227,6 +227,7 @@ export default function SessionScreen() {
           passed: passed ? "1" : "0",
           failedDiemLiet: failedDiemLiet ? "1" : "0",
           passing: config.passingScore,
+          duration,
         },
       });
     } else {
