@@ -16,6 +16,7 @@ export async function initDatabase(): Promise<void> {
     PRAGMA journal_mode = WAL;
     PRAGMA foreign_keys = ON;
 
+    -- Hỗ trợ quy định mới sau 1/7/2026: câu Đúng/Sai, câu video clip tình huống
     CREATE TABLE IF NOT EXISTS questions (
       id            INTEGER PRIMARY KEY,
       chapter       INTEGER NOT NULL,
@@ -24,6 +25,8 @@ export async function initDatabase(): Promise<void> {
       answer        INTEGER NOT NULL, -- 0-based index
       explanation   TEXT    NOT NULL,
       image_url     TEXT,
+      video_url     TEXT,             -- URL clip tình huống (câu dạng video)
+      question_type TEXT    NOT NULL DEFAULT 'mcq', -- mcq | truefalse | video
       is_diem_liet  INTEGER NOT NULL DEFAULT 0,
       license_classes TEXT  NOT NULL  -- JSON array
     );

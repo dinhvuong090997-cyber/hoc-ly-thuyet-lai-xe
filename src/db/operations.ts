@@ -10,8 +10,8 @@ export async function seedQuestions(questions: Question[]): Promise<void> {
     for (const q of questions) {
       await db.runAsync(
         `INSERT OR IGNORE INTO questions
-           (id, chapter, content, options, answer, explanation, image_url, is_diem_liet, license_classes)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+           (id, chapter, content, options, answer, explanation, image_url, video_url, question_type, is_diem_liet, license_classes)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           q.id,
           q.chapter,
@@ -20,6 +20,8 @@ export async function seedQuestions(questions: Question[]): Promise<void> {
           q.answer,
           q.explanation,
           q.imageUrl ?? null,
+          q.videoUrl ?? null,
+          q.type ?? "mcq",
           q.isDiemLiet ? 1 : 0,
           JSON.stringify(q.licenseClasses),
         ]
@@ -312,6 +314,8 @@ function rowToQuestion(row: any): Question {
     answer: row.answer,
     explanation: row.explanation,
     imageUrl: row.image_url ?? undefined,
+    videoUrl: row.video_url ?? undefined,
+    type: (row.question_type ?? "mcq") as Question["type"],
     isDiemLiet: row.is_diem_liet === 1,
     licenseClasses: JSON.parse(row.license_classes),
   };

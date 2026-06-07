@@ -60,7 +60,7 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <View>
             <Text style={styles.greeting}>Lái Thông Minh</Text>
-            <Text style={styles.subGreeting}>Hạng {licenseClass} · BCA 2025</Text>
+            <Text style={styles.subGreeting}>Hạng {licenseClass} · Quy định mới 1/7/2026</Text>
           </View>
           <View style={styles.streakBadge}>
             <Text style={styles.streakEmoji}>🔥</Text>

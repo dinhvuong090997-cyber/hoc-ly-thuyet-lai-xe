@@ -1,5 +1,8 @@
 export type LicenseClass = "A1" | "A" | "B1" | "B" | "C1" | "C" | "D1" | "D2" | "D";
 
+// Dạng câu hỏi mới theo quy định sau 1/7/2026 (Công văn 2333/C08-P5)
+export type QuestionType = "mcq" | "truefalse" | "video";
+
 export interface Question {
   id: number;
   chapter: number;
@@ -8,6 +11,8 @@ export interface Question {
   answer: number; // 0-based index of correct option
   explanation: string;
   imageUrl?: string;
+  videoUrl?: string;      // Cho câu dạng xem clip tình huống
+  type?: QuestionType;    // mcq (mặc định), truefalse, video — optional, default "mcq"
   isDiemLiet: boolean;
   licenseClasses: LicenseClass[];
 }
@@ -52,16 +57,19 @@ export interface ExamConfig {
   questionPoolSize: number; // subset of 600 used for this class
 }
 
+// Áp dụng quy định mới sau 1/7/2026 (Công văn 2333/C08-P5 + Nghị định 94/2026/NĐ-CP)
+// Bỏ thi mô phỏng — chỉ còn: Lý thuyết → Thực hành hình → Thực hành đường
+// Số câu tăng gấp đôi, ngưỡng đậu ~90%
 export const EXAM_CONFIGS: Record<LicenseClass, ExamConfig> = {
-  A1: { licenseClass: "A1", totalQuestions: 25, timeLimitSeconds: 19 * 60, passingScore: 21, questionPoolSize: 250 },
-  A:  { licenseClass: "A",  totalQuestions: 25, timeLimitSeconds: 19 * 60, passingScore: 23, questionPoolSize: 250 },
-  B1: { licenseClass: "B1", totalQuestions: 25, timeLimitSeconds: 19 * 60, passingScore: 23, questionPoolSize: 300 },
-  B:  { licenseClass: "B",  totalQuestions: 30, timeLimitSeconds: 20 * 60, passingScore: 27, questionPoolSize: 600 },
-  C1: { licenseClass: "C1", totalQuestions: 35, timeLimitSeconds: 22 * 60, passingScore: 32, questionPoolSize: 600 },
-  C:  { licenseClass: "C",  totalQuestions: 40, timeLimitSeconds: 24 * 60, passingScore: 36, questionPoolSize: 600 },
-  D1: { licenseClass: "D1", totalQuestions: 45, timeLimitSeconds: 26 * 60, passingScore: 41, questionPoolSize: 600 },
-  D2: { licenseClass: "D2", totalQuestions: 45, timeLimitSeconds: 26 * 60, passingScore: 41, questionPoolSize: 600 },
-  D:  { licenseClass: "D",  totalQuestions: 45, timeLimitSeconds: 26 * 60, passingScore: 41, questionPoolSize: 600 },
+  A1: { licenseClass: "A1", totalQuestions: 50, timeLimitSeconds: 25 * 60, passingScore: 45, questionPoolSize: 600 },
+  A:  { licenseClass: "A",  totalQuestions: 50, timeLimitSeconds: 25 * 60, passingScore: 45, questionPoolSize: 600 },
+  B1: { licenseClass: "B1", totalQuestions: 60, timeLimitSeconds: 30 * 60, passingScore: 54, questionPoolSize: 600 },
+  B:  { licenseClass: "B",  totalQuestions: 60, timeLimitSeconds: 30 * 60, passingScore: 54, questionPoolSize: 600 },
+  C1: { licenseClass: "C1", totalQuestions: 70, timeLimitSeconds: 35 * 60, passingScore: 63, questionPoolSize: 600 },
+  C:  { licenseClass: "C",  totalQuestions: 80, timeLimitSeconds: 40 * 60, passingScore: 72, questionPoolSize: 600 },
+  D1: { licenseClass: "D1", totalQuestions: 90, timeLimitSeconds: 45 * 60, passingScore: 81, questionPoolSize: 600 },
+  D2: { licenseClass: "D2", totalQuestions: 90, timeLimitSeconds: 45 * 60, passingScore: 81, questionPoolSize: 600 },
+  D:  { licenseClass: "D",  totalQuestions: 90, timeLimitSeconds: 45 * 60, passingScore: 81, questionPoolSize: 600 },
 };
 
 export const CHAPTER_NAMES: Record<number, string> = {
@@ -71,6 +79,7 @@ export const CHAPTER_NAMES: Record<number, string> = {
   4: "Cấu tạo xe",
   5: "Biển báo đường bộ",
   6: "Tình huống & Sa hình",
+  7: "Luật hình sự & Xử phạt",  // Mới từ 1/7/2026
 };
 
 // Confirmed điểm liệt question IDs from BCA official list

@@ -33,6 +33,7 @@ export const CHAPTER_COLORS: Record<number, string> = {
   4: "#7E3AF2",
   5: "#E02424",
   6: "#0694A2",
+  7: "#9B1C1C",  // Luật hình sự — màu đỏ đậm
 };
 
 export const USER_ID = "local_user"; // Single-user MVP, no auth required

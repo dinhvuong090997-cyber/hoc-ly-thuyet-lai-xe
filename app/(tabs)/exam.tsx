@@ -22,7 +22,7 @@ export default function ExamScreen() {
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <View style={styles.header}>
         <Text style={styles.title}>Thi Thử</Text>
-        <Text style={styles.sub}>Đề thi theo chuẩn BCA 2025</Text>
+        <Text style={styles.sub}>Theo quy định mới hiệu lực 1/7/2026</Text>
       </View>
 
       <ScrollView style={styles.scroll}>
@@ -46,9 +46,14 @@ export default function ExamScreen() {
             </View>
           </View>
 
+          <View style={styles.newRegBadge}>
+            <Text style={styles.newRegText}>✅ Cập nhật theo Nghị định 94/2026 + Công văn 2333/C08-P5</Text>
+          </View>
+
           <View style={styles.warningBox}>
             <Text style={styles.warningText}>
-              ⚠️ Mỗi đề có 1 câu điểm liệt. Sai câu đó = trượt ngay dù đúng hết câu còn lại.
+              ⚠️ Mỗi đề có 1 câu điểm liệt. Sai câu đó = trượt ngay dù đúng hết câu còn lại.{"\n"}
+              📚 Thêm nội dung mới: Luật hình sự, xử phạt hành chính, trừ điểm GPLX.
             </Text>
           </View>
 
@@ -111,6 +116,15 @@ const styles = StyleSheet.create({
   statNum: { fontSize: 32, fontWeight: "900", color: COLORS.text },
   statLabel: { fontSize: 12, color: COLORS.textSecondary, marginTop: 2 },
   statDivider: { width: 1, backgroundColor: COLORS.border },
+  newRegBadge: {
+    backgroundColor: "#DEF7EC",
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#057A55",
+  },
+  newRegText: { fontSize: 12, color: "#057A55", fontWeight: "700", textAlign: "center" },
   warningBox: {
     backgroundColor: COLORS.warningLight,
     borderRadius: 10,

@@ -259,10 +259,28 @@ export default function SessionScreen() {
       </View>
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-        {/* Điểm liệt badge */}
+        {/* Badges row */}
+        <View style={styles.badgeRow}>
+          {q.isDiemLiet && (
+            <View style={styles.diemLietBadge}>
+              <Text style={styles.diemLietText}>⚠️ ĐIỂM LIỆT</Text>
+            </View>
+          )}
+          {q.chapter === 7 && (
+            <View style={styles.newBadge}>
+              <Text style={styles.newBadgeText}>MỚI 1/7/2026</Text>
+            </View>
+          )}
+          {q.type === "truefalse" && (
+            <View style={styles.tfBadge}>
+              <Text style={styles.tfBadgeText}>ĐÚNG / SAI</Text>
+            </View>
+          )}
+        </View>
+
         {q.isDiemLiet && (
-          <View style={styles.diemLietBadge}>
-            <Text style={styles.diemLietText}>⚠️ CÂU ĐIỂM LIỆT — Sai = Trượt toàn bài</Text>
+          <View style={styles.diemLietWarning}>
+            <Text style={styles.diemLietWarningText}>Sai câu này = Trượt toàn bài dù đúng hết câu còn lại</Text>
           </View>
         )}
 
@@ -292,6 +310,10 @@ export default function SessionScreen() {
               optStyle = { ...optStyle, ...styles.optionSelected } as any;
             }
 
+            const label = q.type === "truefalse"
+              ? (i === 0 ? "✓" : i === 1 ? "✗" : ["C", "D"][i - 2])
+              : ["A", "B", "C", "D"][i];
+
             return (
               <TouchableOpacity
                 key={i}
@@ -300,7 +322,7 @@ export default function SessionScreen() {
                 disabled={session.phase === "answer" || (isExam && session.selectedOption !== null)}
                 activeOpacity={0.7}
               >
-                <Text style={styles.optionLabel}>{["A", "B", "C", "D"][i]}</Text>
+                <Text style={styles.optionLabel}>{label}</Text>
                 <Text style={[textStyle, { flex: 1 }]}>{opt}</Text>
               </TouchableOpacity>
             );
@@ -359,7 +381,17 @@ const styles = StyleSheet.create({
   counter: { fontSize: 13, fontWeight: "700", color: COLORS.text, minWidth: 36, textAlign: "right" },
   scroll: { flex: 1 },
   scrollContent: { padding: 20, paddingBottom: 40 },
+  badgeRow: { flexDirection: "row", gap: 8, marginBottom: 10, flexWrap: "wrap" },
   diemLietBadge: {
+    backgroundColor: COLORS.dangerLight,
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderWidth: 1,
+    borderColor: COLORS.danger,
+  },
+  diemLietText: { fontSize: 12, fontWeight: "800", color: COLORS.danger },
+  diemLietWarning: {
     backgroundColor: COLORS.dangerLight,
     borderRadius: 8,
     padding: 10,
@@ -367,7 +399,25 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.danger,
   },
-  diemLietText: { fontSize: 13, fontWeight: "700", color: COLORS.danger, textAlign: "center" },
+  diemLietWarningText: { fontSize: 13, fontWeight: "600", color: COLORS.danger, textAlign: "center" },
+  newBadge: {
+    backgroundColor: "#FDF6B2",
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderWidth: 1,
+    borderColor: "#C27803",
+  },
+  newBadgeText: { fontSize: 12, fontWeight: "800", color: "#C27803" },
+  tfBadge: {
+    backgroundColor: "#EDE9FE",
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderWidth: 1,
+    borderColor: "#7E3AF2",
+  },
+  tfBadgeText: { fontSize: 12, fontWeight: "800", color: "#7E3AF2" },
   chapterBadge: { fontSize: 12, color: COLORS.primary, fontWeight: "600", marginBottom: 8 },
   question: {
     fontSize: 18,
