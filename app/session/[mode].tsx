@@ -12,7 +12,7 @@ import { EXAM_CONFIGS } from "../../src/types";
 import {
   getDueCards, getNewCards, getDiemLietQuestions,
   getQuestionById, recordAnswer, saveExamSession,
-  getQuestionsCount,
+  getQuestionsCount, getQuestionsByChapter,
 } from "../../src/db/operations";
 import { useUserStore } from "../../src/stores/userStore";
 import { getUserStats } from "../../src/db/operations";
@@ -97,17 +97,23 @@ export default function SessionScreen() {
       const stats = await getUserStats(USER_ID);
       const lc = stats.licenseClass;
       const config = EXAM_CONFIGS[lc];
-      const total = await getQuestionsCount();
-      // For MVP: pick random questions from available pool
-      const allDue = await getDueCards(USER_ID, config.totalQuestions * 2);
-      const dueQs = (await Promise.all(allDue.map((c) => getQuestionById(c.questionId)))).filter(Boolean) as Question[];
-      const newQs = await getNewCards(USER_ID, lc, config.totalQuestions);
-      const pool = [...dueQs, ...newQs].slice(0, config.totalQuestions);
-      questions = pool.sort(() => Math.random() - 0.5);
+      // Get all available questions and shuffle for exam
+      const allChapters = [1, 2, 3, 4, 5, 6, 7];
+      const allQs: Question[] = [];
+      for (const ch of allChapters) {
+        const chQs = await getQuestionsByChapter(ch);
+        allQs.push(...chQs);
+      }
+      // Ensure at least 1 điểm liệt question in exam
+      const diemLietQs = allQs.filter((q) => q.isDiemLiet).sort(() => Math.random() - 0.5);
+      const normalQs = allQs.filter((q) => !q.isDiemLiet).sort(() => Math.random() - 0.5);
+      const picked = diemLietQs.slice(0, 1);
+      const needed = config.totalQuestions - picked.length;
+      picked.push(...normalQs.slice(0, needed));
+      questions = picked.sort(() => Math.random() - 0.5);
       setTimeLeft(config.timeLimitSeconds);
     } else if (mode?.startsWith("chapter-")) {
       const chapter = parseInt(mode.replace("chapter-", ""), 10);
-      const { getQuestionsByChapter } = await import("../../src/db/operations");
       questions = await getQuestionsByChapter(chapter);
       questions = questions.sort(() => Math.random() - 0.5).slice(0, 20);
     }

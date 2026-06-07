@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Stack } from "expo-router";
+import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { initDatabase } from "../src/db/schema";
-import { seedQuestions, getQuestionsCount } from "../src/db/operations";
+import { seedQuestions, getQuestionsCount, getUserStats } from "../src/db/operations";
 import { SAMPLE_QUESTIONS } from "../src/db/seed/questions";
-import { COLORS } from "../src/constants";
+import { COLORS, USER_ID } from "../src/constants";
 
 export default function RootLayout() {
   const [dbReady, setDbReady] = useState(false);
@@ -18,7 +19,13 @@ export default function RootLayout() {
       if (count === 0) {
         await seedQuestions(SAMPLE_QUESTIONS);
       }
+      // Show onboarding if first time (no user stats yet)
+      const stats = await getUserStats(USER_ID);
       setDbReady(true);
+      if (!stats.lastStudyDate && stats.totalXp === 0) {
+        // First launch — go to onboarding
+        router.replace("/onboarding");
+      }
     }
     setup();
   }, []);
