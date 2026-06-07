@@ -15,10 +15,7 @@ export default function RootLayout() {
   useEffect(() => {
     async function setup() {
       await initDatabase();
-      const count = await getQuestionsCount();
-      if (count === 0) {
-        await seedQuestions(SAMPLE_QUESTIONS);
-      }
+      await seedQuestions(SAMPLE_QUESTIONS);
       // Show onboarding if first time (no user stats yet)
       const stats = await getUserStats(USER_ID);
       setDbReady(true);

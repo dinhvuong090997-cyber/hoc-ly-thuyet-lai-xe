@@ -182,12 +182,12 @@ export default function SessionScreen() {
     }));
   }
 
-  function finishSession() {
+  async function finishSession() {
     if (!session) return;
 
     if (isExam) {
-      const stats = getUserStats(USER_ID);
-      const lc = (session as any).licenseClass ?? "B";
+      const stats = await getUserStats(USER_ID);
+      const lc = stats.licenseClass ?? "B";
       const config = EXAM_CONFIGS[lc as keyof typeof EXAM_CONFIGS] ?? EXAM_CONFIGS["B"];
       const total = session.questions.length;
       let correct = 0;
