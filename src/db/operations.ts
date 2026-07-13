@@ -84,23 +84,13 @@ export async function getNewCards(userId: string, licenseClass: LicenseClass, li
     `SELECT q.* FROM questions q
      LEFT JOIN card_progress cp ON cp.question_id = q.id AND cp.user_id = ?
      WHERE cp.question_id IS NULL
-       AND json_each.value = ?
+       AND EXISTS (
+         SELECT 1 FROM json_each(q.license_classes) je WHERE je.value = ?
+       )
      ORDER BY q.id
      LIMIT ?`,
     [userId, licenseClass, limit]
   );
-  // Fallback: simpler query without JSON each
-  if (rows.length === 0) {
-    const allRows = await db.getAllAsync<any>(
-      `SELECT q.* FROM questions q
-       LEFT JOIN card_progress cp ON cp.question_id = q.id AND cp.user_id = ?
-       WHERE cp.question_id IS NULL
-       ORDER BY q.id
-       LIMIT ?`,
-      [userId, limit]
-    );
-    return allRows.map(rowToQuestion);
-  }
   return rows.map(rowToQuestion);
 }
 

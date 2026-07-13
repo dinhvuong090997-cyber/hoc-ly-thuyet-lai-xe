@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import {
   View, Text, TouchableOpacity, ScrollView,
   StyleSheet, Alert, ActivityIndicator,
@@ -37,6 +37,14 @@ export default function SessionScreen() {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<SessionState | null>(null);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
+
+  // Kept in sync with `session` so the exam countdown (set up once in a
+  // useEffect below) always finishes with the latest answers instead of
+  // the stale snapshot captured when the interval was created.
+  const sessionRef = useRef<SessionState | null>(null);
+  useEffect(() => {
+    sessionRef.current = session;
+  }, [session]);
 
   const isExam = mode === "exam";
   const isDiemLiet = mode === "diemliet";
@@ -183,6 +191,7 @@ export default function SessionScreen() {
   }
 
   async function finishSession() {
+    const session = sessionRef.current;
     if (!session) return;
 
     if (isExam) {
